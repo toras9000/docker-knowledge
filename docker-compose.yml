@@ -1,0 +1,26 @@
+version: '2'
+services:
+  db:
+    image: postgres:12
+    restart: always
+    volumes:
+      - ./volumes/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=knowledge_user
+      - POSTGRES_PASSWORD=knowledge_pass
+      - POSTGRES_DB=knowledge_store
+
+  app:
+    image: toras9000/knowledge:1.13.1
+    build:
+      context: ./build
+    restart: always
+    links:
+      - db:db-container
+    ports:
+      - "8030:8080"
+    volumes:
+      - ./volumes/app:/root/.knowledge
+    environment:
+      - COOKIE_ENCRYPT_KEY=empty-is-random
+      - EDIT_PAGE_CUSTOM=FALSE
